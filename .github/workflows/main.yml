@@ -236,7 +236,7 @@ jobs:
          
       - name: 应用patch_linux并修补内核
         run: |
-          cd kernel_workspace/out/android12-5.10/common/arch/arm64/boot
+          cd kernel_workspace/out/android12-5.1/common/arch/arm64/boot
           curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.11-beta/patch_linux
           chmod +x patch_linux
           ./patch_linux
