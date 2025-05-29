@@ -138,7 +138,11 @@ jobs:
       - name: 开始应用 Hide Stuff 修补程序啦~
         run: |
           cd kernel_workspace
+          if [ ! -d "SukiSU_patch" ]; then
           git clone https://github.com/ShirkNeko/SukiSU_patch.git --depth 1
+          else
+          echo "SukiSU_patch 目录已存在，跳过克隆喵"
+          fi
           cd common
           cp ../SukiSU_patch/69_hide_stuff.patch ./
           patch -p1 < 69_hide_stuff.patch
