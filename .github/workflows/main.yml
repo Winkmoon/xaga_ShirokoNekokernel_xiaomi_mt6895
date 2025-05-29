@@ -234,9 +234,10 @@ jobs:
           BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh || echo "完毕"
           echo "内核编译完成！"
          
+               
       - name: 应用patch_linux并修补内核
         run: |
-           cd "$(dirname $(find  ./out  -name "Image"))"
+          cd kernel_workspace/out/android12-5.1/common/arch/arm64/boot
           curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.11-beta/patch_linux
           chmod +x patch_linux
           ./patch_linux
