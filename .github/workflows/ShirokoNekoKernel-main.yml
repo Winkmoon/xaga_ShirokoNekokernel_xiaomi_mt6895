@@ -1,4 +1,4 @@
-name: 红米mt6895(xaga) 内核编译项目~nya
+name: 红米mt6895(xaga) 内核编译项目
 
 env:
   TZ: Asia/Shanghai
