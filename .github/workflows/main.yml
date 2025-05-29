@@ -236,7 +236,7 @@ jobs:
          
       - name: 应用patch_linux并修补内核
         run: |
-          cd "$(dirname $(find  ./out  -name "Image"))"
+           cd "$(dirname $(find  ./out  -name "Image"))"
           curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.11-beta/patch_linux
           chmod +x patch_linux
           ./patch_linux
