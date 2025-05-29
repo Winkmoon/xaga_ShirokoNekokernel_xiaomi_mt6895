@@ -1,4 +1,4 @@
-name: 红米mt6895(xaga) 内核编译项目
+name: 红米mt6895(xaga) 内核编译项目~
 
 env:
   TZ: Asia/Shanghai
@@ -6,45 +6,46 @@ env:
   FEIL: 'redmi+xiaomi'
   ANDROID_VERSION: 'android12'
   KERNEL_VERSION: '5.10'
-  KERNEL_NAME: 'ShirokoNeko-SKSU-OKI-nya'
+  KERNEL_NAME: '-ShirokoNeko Kernel-xaga-sksu-oki'
   KERNELSU_VARIANT: 'SukiSU-Ultra'
   KERNELSU_BRANCH: 'susfs-dev'
 
 on:
   workflow_dispatch:
+    inputs:
+      lz4k_enable:
+        description: '是否安装 LZ4K 补丁'
+        required: true
+        type: choice
+        default: 'false'
+        options:
+          - 'true'
+          - 'false'
+      scx_enable:
+        description: '是否安装风驰内核驱动'
+        required: true
+        type: choice
+        default: 'false'
+        options:
+          - 'true'
+          - 'false'
+      xaga_forge:
+        description: '使用forge版内核'
+        required: true
+        type: choice
+        default: 'false'
+        options:
+          - 'true'
+          - 'false'
+      kernel_suffix:
+        description: '内核后缀(留空默认,开头别加连字符)'
+        required: false
+        type: string
+        default: ''
+  
   # 取消此处注释代码可开启每日定时编译
   # schedule:
   #   - cron: '0 23 * * *'  # UTC时间23点（北京时间次日7点）
-  inputs:
-    lz4k_enable:
-      description: '是否安装 LZ4K 补丁'
-      required: true
-      type: choice
-      default: 'false'
-      options:
-        - 'true'
-        - 'false'
-    scx_enable:
-      description: '是否安装风驰内核驱动'
-      required: true
-      type: choice
-      default: 'false'
-      options:
-        - 'true'
-        - 'false'
-    xaga_forge:
-      description: '使用forge版内核'
-      required: true
-      type: choice
-      default: 'false'
-      options:
-        - 'true'
-        - 'false'
-    kernel_suffix:
-      description: '内核后缀(留空默认,开头别加连字符)'
-      required: false
-      type: string
-      default: ''
 
 jobs:
   build:
@@ -63,7 +64,7 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
           
-      - name: Show selected inputs debug
+      - name: 显示选定的输入 debug
         run: |
           echo "Selected scx_enable: ${{ github.event.inputs.scx_enable }}"
           echo "Selected lz4k: ${{ github.event.inputs.lz4k_enable }}"
@@ -80,7 +81,7 @@ jobs:
             sudo chmod +x llvm.sh
             sudo sudo ./llvm.sh 20 all
           
-      - name: Install repo tool
+      - name: 安装 repo 工具~
         run: |
           curl https://storage.googleapis.com/git-repo-downloads/repo > ~/repo
           chmod a+x ~/repo
@@ -110,9 +111,9 @@ jobs:
         id: ksu_version
         run: |
           cd kernel_workspace
-          #if [[ "${{ env.KERNELSU_VARIANT }}" == "SukiSU-Ultra" ]]; then
-          #  echo "BRANCH='-s susfs-dev'" >> $GITHUB_ENV
-          #fi
+           if [[ "${{ env.KERNELSU_VARIANT }}" == "SukiSU-Ultra" ]]; then
+             echo "BRANCH='-s susfs-dev'" >> $GITHUB_ENV
+           fi
           curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/refs/heads/main/kernel/setup.sh" | bash -s main
           cd ./KernelSU
           KSU_VERSION=$(expr $(/usr/bin/git rev-list --count main) "+" 10606)
@@ -224,7 +225,7 @@ jobs:
           fi
           
           export LTO=thin SYSTEM_DLKM_RE_SIGN=0 BUILD_SYSTEM_DLKM=0 KMI_SYMBOL_LIST_STRICT_MODE=0
-          # cd common && make -j$(nproc --all) LLVM=-20 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-Wno-error gki_defconfig all
+            cd common && make -j$(nproc --all) LLVM=-20 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnuabeihf- CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld O=out KCFLAGS+=-Wno-error gki_defconfig all
           sed -i '/Makefile/d' common/scripts/Makefile.clean
           sed -i 's#include $(KO_CODE_PATH)/platform/$(MALI_PLATFORM_DIR)/Kbuild#include $(KO_CODE_PATH)/platform/mt6895/Kbuild#g' common/drivers/gpu/mediatek/mali-valhall/gpu/arm/midgard/Makefile
           BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh || echo "完毕"
@@ -249,14 +250,14 @@ jobs:
             cp $i AnyKernel3
           done
           cd AnyKernel3
-          # cp ../common/out/arch/arm64/boot/Image ./Image
+            cp ../common/out/arch/arm64/boot/Image ./Image
           if [ ! -f ./Image ]; then
             echo "未找到内核镜像文件，构建可能出错"
-            # exit 1
+              exit 1
           fi
-          # if [[ ${{ github.event.inputs.lz4k_enable }} == "true" ]]; then
-            # wget https://raw.githubusercontent.com/Suxiaoqinx/kernel_manifest_OnePlus_Sukisu_Ultra/main/zram.zip
-          # fi
+            if [[ ${{ github.event.inputs.lz4k_enable }} == "true" ]]; then
+              wget https://raw.githubusercontent.com/Suxiaoqinx/kernel_manifest_OnePlus_Sukisu_Ultra/main/zram.zip
+            fi
           if [[ -n "${{ github.event.inputs.kernel_suffix }}" ]]; then
             zip -r ../AnyKernel3_SukiSU_${{ env.KSUVER }}_${{ env.KERNEL_VERSION }}_A14_${{ github.event.inputs.kernel_suffix }}.zip ./*
           else
