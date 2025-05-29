@@ -108,7 +108,7 @@ jobs:
             sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' "$f"
           done
 
-      - name: 添加 SukiSU-Ultra
+        - name: 添加 SukiSU-Ultra
         id: ksu_version
         run: |
           cd kernel_workspace
