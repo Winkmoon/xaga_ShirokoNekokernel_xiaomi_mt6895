@@ -15,7 +15,7 @@ on:
   # 取消此处注释代码可开启每日定时编译
   # schedule:
   #   - cron: '0 23 * * *'  # UTC时间23点（北京时间次日7点）
-  inputs:
+  issues:
     lz4k_enable:
       description: '是否安装 LZ4K 补丁'
       required: true
@@ -72,13 +72,13 @@ jobs:
       - name: 安装配置环境依赖
         run: |
           sudo apt update
-          # sudo apt upgrade -y
+          sudo apt upgrade -y
           sudo apt install llvm clang cmake
           sudo apt-get install curl bison flex make binutils dwarves git lld pahole zip perl make gcc python3 python-is-python3 bc libssl-dev libelf-dev -y
-          # sudo rm -rf ./llvm.sh
-          # sudo wget https://apt.llvm.org/llvm.sh
-          # sudo chmod +x llvm.sh
-          # sudo sudo ./llvm.sh 20 all
+          sudo rm -rf ./llvm.sh
+          sudo wget https://apt.llvm.org/llvm.sh
+          sudo chmod +x llvm.sh
+          sudo sudo ./llvm.sh 20 all
           
       - name: Install repo tool
         run: |
