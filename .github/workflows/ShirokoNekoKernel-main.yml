@@ -1,4 +1,4 @@
-name: 红米mt6895(xaga) 内核编译项目
+name: 红米mt6895(xaga) 内核编译项目~
 
 env:
   TZ: Asia/Shanghai
@@ -54,7 +54,7 @@ jobs:
     outputs:
       ksuver: ${{ steps.ksu_version.outputs.ksuver }}
     steps:
-      - name: 最大化建筑空间
+      - name: 开始最大化建筑空间啦~
         uses: easimon/maximize-build-space@master
         with:
           root-reserve-mb: 8192
@@ -71,7 +71,7 @@ jobs:
           echo "Selected lz4k: ${{ github.event.inputs.lz4k_enable }}"
           echo "Selected xaga_forge: ${{ github.event.inputs.xaga_forge }}"
           
-      - name: 安装配置环境依赖
+      - name: 开始安装配置环境依赖啦~
         run: |
           sudo apt update
           # sudo apt upgrade -y
@@ -88,27 +88,27 @@ jobs:
           chmod a+x ~/repo
           sudo mv ~/repo /usr/local/bin/repo
           
-      - name: 初始化源码仓库
+      - name: 正在初始化源码仓库~
         run: |
           rm -rf kernel_workspace && mkdir kernel_workspace && cd kernel_workspace
           repo init --depth 1 -u https://android.googlesource.com/kernel/manifest -b common-android12-5.10
           repo sync -c -j$(nproc --all) --no-tags --no-clone-bundle --force-sync
           rm -rf common
-          echo "正在克隆源码仓库..."          
+          echo "正在克隆源码仓库ing..."          
           if [ "${{ github.event.inputs.xaga_forge }}" == "true" ]; then
             git clone --depth=1 https://github.com/XagaForge/android_kernel_xiaomi_mt6895 common -b 15
           else
             git clone --depth=1 https://github.com/xiaomi-mediatek-devs/android_kernel_xiaomi_mt6895 common -b lineage-22.2
           fi
           
-          echo "正在去除 ABI 保护 & 去除 dirty 后缀..."
+          echo "正在去除 ABI 保护 & 去除 dirty 后缀喵..."
           rm common/android/abi_gki_protected_exports_* || echo "不需要去除保护"
           for f in common/scripts/setlocalversion; do
             sed -i 's/ -dirty//g' "$f"
             sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' "$f"
           done
 
-      - name: 添加 SukiSU-Ultra
+      - name: 开始添加 SukiSU-Ultra啦~
         id: ksu_version
         run: |
           cd kernel_workspace
@@ -123,7 +123,7 @@ jobs:
           export KSU_VERSION=$KSU_VERSION
           sed -i "s/DKSU_VERSION=12800/DKSU_VERSION=$KSU_VERSION/" kernel/Makefile
 
-       - name: 应用 SUSFS 修补程序 SukiSU-Ultra
+       - name: 开始应用 SUSFS 修补程序 SukiSU-Ultra啦~
          run: |
            cd kernel_workspace
            git clone https://github.com/ShirkNeko/susfs4ksu.git -b gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}
@@ -136,7 +136,7 @@ jobs:
            patch -p1 < 50_add_susfs_in_gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch || true
            patch -p1 < new_hooks.patch
 
-      - name: 应用 Hide Stuff 修补程序
+      - name: 开始应用 Hide Stuff 修补程序啦~
         run: |
           
           cd kernel_workspace
@@ -145,7 +145,7 @@ jobs:
           cp ../SukiSU_patch/69_hide_stuff.patch ./
           patch -p1 < 69_hide_stuff.patch
           
-      - name: Apply VFS
+      - name: 开始打vfs补丁啦~（私人方案）
         run: |
           cd kernel_workspace/common
           cp ../SukiSU_patch/hooks/syscall_hooks.patch ./
@@ -154,7 +154,7 @@ jobs:
           echo "vfs_patch完成"
           
           
-      - name: 应用 lz4k 补丁
+      - name: 开始应用 lz4k 补丁啦~
         run: |
           if [[ "${{ github.event.inputs.lz4k_enable }}" == "true" ]]; then
             cd kernel_workspace/common
@@ -165,7 +165,7 @@ jobs:
             patch -p1 -F 3 < lz4kd.patch || true
           fi
           
-      - name: 添加 SUSFS 配置设置
+      - name: 开始添加 SUSFS 配置设置啦~
         run: |
           cd kernel_workspace
           echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
@@ -201,7 +201,7 @@ jobs:
           #禁用 defconfig 检查
           sed -i 's/check_defconfig//' ./common/build.config.gki
 
-      - name: 添加制作名称
+      - name: 开始添加制作名称啦~
         run: |
           cd kernel_workspace
           echo "替换内核版本后缀..."
@@ -217,7 +217,7 @@ jobs:
             done
           fi
            
-      - name: 构建内核
+      - name: 正式开始构建内核啦！！
         run: |
           cd kernel_workspace
           if [[ ${{ github.event.inputs.scx_enable }} == "true" ]]; then
@@ -232,9 +232,9 @@ jobs:
           sed -i '/Makefile/d' common/scripts/Makefile.clean
           sed -i 's#include $(KO_CODE_PATH)/platform/$(MALI_PLATFORM_DIR)/Kbuild#include $(KO_CODE_PATH)/platform/mt6895/Kbuild#g' common/drivers/gpu/mediatek/mali-valhall/gpu/arm/midgard/Makefile
           BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh || echo "完毕"
-          echo "内核编译完成！"
+          echo "内核编译完成~~~~"
          
-      - name: 应用patch_linux并修补内核
+      - name: 做最后的工作~应用patch_linux并修补内核~~
         run: |
           cd kernel_workspace/out/android12-5.10/common/arch/arm64/boot
           curl -LO https://github.com/ShirkNeko/SukiSU_KernelPatch_patch/releases/download/0.11-beta/patch_linux
@@ -243,7 +243,7 @@ jobs:
           rm -f Image
           mv oImage Image
           
-      - name: 克隆 AnyKernel3 并打包
+      - name: 开始克隆 AnyKernel3 并打包~~
         run: |
           cd kernel_workspace
           git clone https://github.com/cctv18/AnyKernel3 --depth=1
@@ -267,7 +267,7 @@ jobs:
             zip -r ../AnyKernel3_SukiSU_${{ env.KSUVER }}_${{ env.KERNEL_VERSION }}_A14_${{ env.KERNEL_NAME }}.zip ./*
           fi
 
-      - name: 上传 ZIP 工件
+      - name: 开始上传 ZIP 工件~~
         uses: actions/upload-artifact@v4
         with:
           name: Kernel_ZIP_Artifacts
@@ -288,7 +288,7 @@ jobs:
           # name: Kernel_ZIP_Artifacts
           # path: ./release_zips
 
-      # - name: 设置环境变量
+      # - name: 设置环境变量~
         # run: |
           # if [[ -n "${{ github.event.inputs.kernel_suffix }}" ]]; then
             # FULL_VERSION=${{ format('{0}.57-{1}', env.KERNEL_VERSION, github.event.inputs.kernel_suffix) }}
@@ -306,7 +306,7 @@ jobs:
           # TAG_HEAD="OPPO+OPlus+Realme-A14-build"
           # echo "TAG_HEAD=$TAG_HEAD" >> $GITHUB_ENV
          
-      # - name: 创建发布
+      # - name: 成功啦！创建发布~~
         # id: create_release
         # uses: softprops/action-gh-release@v1
         # with:
