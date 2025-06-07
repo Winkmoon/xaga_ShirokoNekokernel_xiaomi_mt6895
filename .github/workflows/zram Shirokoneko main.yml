@@ -1,4 +1,4 @@
-name: xaga kernel自定义修改构建
+name: note11tPro类原生kernel构建
 
 env:
   TZ: Asia/Shanghai
@@ -84,7 +84,7 @@ jobs:
           repo sync -c -j$(nproc --all) --no-tags --no-clone-bundle --force-sync
           rm -rf common
           echo "正在克隆源码仓库..."
-          git clone --depth=1 https://github.com/xiaomi-mediatek-devs/android_kernel_xiaomi_mt6895 common -b lineage-22.2
+          git clone --depth=1 https://github.com/Winkmoon/xaga_kernel_aosp_mt6895 common -b 15
           echo "正在去除 ABI 保护 & 去除 dirty 后缀..."
           rm common/android/abi_gki_protected_exports_* || echo "不需要去除保护"
           for f in common/scripts/setlocalversion; do
