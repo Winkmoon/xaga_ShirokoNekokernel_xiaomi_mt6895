@@ -8,7 +8,7 @@ env:
   KERNEL_VERSION: '5.10'
   KERNEL_NAME: 'xaga/8b212062'
   KERNELSU_VARIANT: 'SukiSU-Ultra'
-  KERNELSU_BRANCH: 'susfs-dev'
+  KERNELSU_BRANCH: 'susfs-main'
 
 on:
   workflow_dispatch:
