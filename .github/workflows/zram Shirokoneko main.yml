@@ -36,7 +36,7 @@ on:
         description: '内核后缀(留空默认,开头别加连字符)'
         required: false
         type: string
-        default: ''
+        default: 'gki-xaga/8b212062'
 
 jobs:
   build:
