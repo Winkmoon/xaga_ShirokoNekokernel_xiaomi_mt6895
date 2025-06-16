@@ -87,7 +87,7 @@ jobs:
           curl https://storage.googleapis.com/git-repo-downloads/repo > ~/repo
           chmod a+x ~/repo
           sudo mv ~/repo /usr/local/bin/repo
-          
+
       - name: 初始化源码仓库
         run: |
           rm -rf kernel_workspace && mkdir kernel_workspace && cd kernel_workspace
