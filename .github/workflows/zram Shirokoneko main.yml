@@ -6,7 +6,7 @@ env:
   FEIL: 'redmi+xiaomi'
   ANDROID_VERSION: 'android12'
   KERNEL_VERSION: '5.10'
-  KERNEL_NAME: 'ShirokoNekoKernel-SKSU-OKI-XinRan_V1'
+  KERNEL_NAME: 'xaga/8b212062'
   KERNELSU_VARIANT: 'SukiSU-Ultra'
   KERNELSU_BRANCH: 'susfs-dev'
 
