@@ -147,14 +147,29 @@ jobs:
       - name: 构建内核
         run: |
           cd kernel_workspace 
-          export LTO=thin SYSTEM_DLKM_RE_SIGN=0 BUILD_SYSTEM_DLKM=0 KMI_SYMBOL_LIST_STRICT_MODE=0
-          
+          export LTO=thin
+          export SYSTEM_DLKM_RE_SIGN=0
+          export BUILD_SYSTEM_DLKM=0
+          export KMI_SYMBOL_LIST_STRICT_MODE=0
+          ###清理Makefile引用###
           sed -i '/Makefile/d' common/scripts/Makefile.clean
+
           
-          sed -i 's#include $(KO_CODE_PATH)/platform/$(MALI_PLATFORM_DIR)/Kbuild#include $(KO_CODE_PATH)/platform/mt6895/Kbuild#g' common/drivers/gpu/mediatek/mali-valhall/gpu/arm/midgard/Makefile
-          
-          BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh || echo "完成啦！"
-          
+          ###自动判断Mali GPU 架构并应用平台路径修改####
+          if [ -f "common/drivers/gpu/mediatek/mali-valhall/gpu/arm/midgard/Makefile" ]; then
+          echo "使用 midgard 架构，执行 patch..."
+          sed -i 's#include $(KO_CODE_PATH)/platform/$(MALI_PLATFORM_DIR)/Kbuild#include $(KO_CODE_PATH)/platform/mt6895/Kbuild#g' \
+          common/drivers/gpu/mediatek/mali-valhall/gpu/arm/midgard/Makefile
+          elif [ -f "common/drivers/gpu/mediatek/mali-valhall/gpu/arm/valhall/Makefile" ]; then
+          echo "使用 valhall 架构，执行 patch..."
+          sed -i 's#include $(KO_CODE_PATH)/platform/$(MALI_PLATFORM_DIR)/Kbuild#include $(KO_CODE_PATH)/platform/mt6895/Kbuild#g' \
+          common/drivers/gpu/mediatek/mali-valhall/gpu/arm/valhall/Makefile
+          else
+          echo "找不到 Mali GPU 架构 Makefile，跳过 patch。"
+          fi
+
+          #启动构建
+          BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh
           echo "内核编译完成！"
          
       - name: 应用patch_linux并修补内核
