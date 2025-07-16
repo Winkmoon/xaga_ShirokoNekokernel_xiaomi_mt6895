@@ -225,9 +225,6 @@ jobs:
             # echo "未找到内核镜像文件，构建可能出错"
             # exit 1
           # fi
-          if [[ ${{ github.event.inputs.lz4k_enable }} == "true" ]]; then
-            wget https://raw.githubusercontent.com/Suxiaoqinx/kernel_manifest_OnePlus_Sukisu_Ultra/main/zram.zip
-          fi
           if [[ -n "${{ github.event.inputs.kernel_suffix }}" ]]; then
             # zip -r ../AnyKernel3_SukiSU_${{ env.KSUVER }}_${{ env.KERNEL_VERSION }}_A14_${{ github.event.inputs.kernel_suffix }}.zip ./*
             zip -r ../AnyKernel3_SukiSU_${{ env.KSUVER }}_${{ env.KERNEL_VERSION }}.zip ./*
