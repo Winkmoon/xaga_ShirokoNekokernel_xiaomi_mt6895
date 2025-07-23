@@ -119,3 +119,9 @@ source "drivers/staging/wfx/Kconfig"
 source "drivers/staging/hikey9xx/Kconfig"
 
 endif # STAGING
+
+config REKERNEL
+	tristate "Re:Kernel"
+	default n
+	help
+	  Support Re:Kernel for better Tombstone functionality.
