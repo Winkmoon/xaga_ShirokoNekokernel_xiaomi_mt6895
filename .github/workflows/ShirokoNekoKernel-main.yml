@@ -6,7 +6,7 @@ env:
   FEIL: 'redmi+xiaomi'
   ANDROID_VERSION: 'android12'
   KERNEL_VERSION: '5.10'
-  KERNEL_NAME: 'ShirokoNeko-XiaoMiPad6定制版'
+  KERNEL_NAME: 'ShirokoNeko-XiaoMi'
   KERNELSU_VARIANT: 'SukiSU-Ultra'
   KERNELSU_BRANCH: 'susfs-main'
 
